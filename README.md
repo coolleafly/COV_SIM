@@ -5,7 +5,7 @@ Discrete simulation analysis of COVID-19 and prediction of isolation bed numbers
 ## Prerequisites
 -JDK 1.8
 
-##Tested on:
+## Tested on:
 *windows 10 Home, IntelliJ IDEA 2019.3.4.
 We recommend the operating environment like these:
 Microsoft Windows 10/8/7/Vista/2003/XP (incl.64),

@@ -17,14 +17,14 @@ public class MyPanel extends JPanel implements Runnable {
     {
         timeLine.timerun();
         super.paint(g);
-        g.setColor(new Color(0xFF797D));                   //设置医院边界颜色
+        g.setColor(new Color(0xFF797D));                   //The Color of the Hospital
         g.drawRect(Hospital.getInstance().getX(), Hospital.getInstance().getY(),
-                Hospital.getInstance().getWidth(), Hospital.getInstance().getHeight());    //绘制医院边界
+                Hospital.getInstance().getWidth(), Hospital.getInstance().getHeight());    
         g.setFont(new Font("微软雅黑", Font.BOLD, 16));
         g.setColor(new Color(0x00ff00));
         g.drawString("医院", Hospital.getInstance().getX() + Hospital.getInstance().getWidth() / 4,
                 Hospital.getInstance().getY() - 16);
-        List<Person> people = PersonPool.getInstance().getPersonList();    //绘制代表人类的圆点
+        List<Person> people = PersonPool.getInstance().getPersonList();    //The circle of the people
         if (people == null)
         {
             return;
@@ -35,46 +35,46 @@ public class MyPanel extends JPanel implements Runnable {
             {
                 case Person.State.NORMAL:
                 {
-                    g.setColor(new Color(0x338221));   //健康人
+                    g.setColor(new Color(0x338221));   //NORMAL
                     break;
                 }
                 case Person.State.SHADOW:
                 {
-                    g.setColor(new Color(0xffee00));   //潜伏期感染者
+                    g.setColor(new Color(0xffee00));   //SHADOW
                     break;
                 }
                 case Person.State.SUPER:
                 {
-                    g.setColor(new Color(0xFFFFAE));     //超级传播者
+                    g.setColor(new Color(0xFFFFAE));     //SUPER
                     break;
                 }
                 case Person.State.CONFIRMED:
                 {
-                    g.setColor(new Color(0xFF97C4));   //疑似患者
+                    g.setColor(new Color(0xFF97C4));   //CONFIRMED
                     break;
                 }
                 case Person.State.DIAGNOSIS:
                 {
-                    g.setColor(new Color(0xFF0E09));   //确诊患者
+                    g.setColor(new Color(0xFF0E09));   //DIAGNOSIS
                     break;
                 }
                 case Person.State.FREEZE:
                 {
-                    g.setColor(new Color(0x48FFFC));   //已隔患者
+                    g.setColor(new Color(0x48FFFC));   //FREEZE
                     break;
                 }
                 case Person.State.DEATH:
                 {
-                    g.setColor(new Color(0x000000));   //死亡患者
+                    g.setColor(new Color(0x000000));   //DEATH
                     break;
                 }
                 case Person.State.CURED:
                 {
                     //治愈患者
-                    g.setColor(new Color(0x00ff00));      //治愈患者
+                    g.setColor(new Color(0x00ff00));      //CURED
                 }
             }
-            person.update();         //对各种状态的市民进行不同的处理
+            person.update();         //Data update
             g.fillRoundRect(person.getX(), person.getY(), 5, 5,0,0);
         }
 
@@ -84,24 +84,24 @@ public class MyPanel extends JPanel implements Runnable {
 
         //显示数据信息
         g.setColor(Color.WHITE);
-        g.drawString("城市总人数：" + Constants.CITY_PERSON_SIZE, captionStartOffsetX, captionStartOffsetY);
+        g.drawString("Total persons：" + Constants.CITY_PERSON_SIZE, captionStartOffsetX, captionStartOffsetY);
         g.setColor(new Color(0x338221));
-        g.drawString("健康者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.NORMAL),
+        g.drawString("Number of healthy persons: " + PersonPool.getInstance().getPeopleSize(Person.State.NORMAL),
                 captionStartOffsetX, captionStartOffsetY + captionSize);
         g.setColor(new Color(0xffee00));
-        g.drawString("潜伏期人数：" + PersonPool.getInstance().getPeopleSize(Person.State.SHADOW),
+        g.drawString("Number of people in incubation period: " + PersonPool.getInstance().getPeopleSize(Person.State.SHADOW),
                 captionStartOffsetX, captionStartOffsetY + 2 * captionSize);
         g.setColor(new Color(0xFFFFAE));
-        g.drawString("超级潜伏者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.SUPER),
+        g.drawString("Number of super infectors:" + PersonPool.getInstance().getPeopleSize(Person.State.SUPER),
                 captionStartOffsetX, captionStartOffsetY + 3 * captionSize);
         g.setColor(new Color(0xFF97C4));
-        g.drawString("疑似者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.CONFIRMED),
+        g.drawString("Number of suspected symptoms persons:" + PersonPool.getInstance().getPeopleSize(Person.State.CONFIRMED),
                 captionStartOffsetX, captionStartOffsetY + 4 * captionSize);
         g.setColor(new Color(0xFF0E09));
-        g.drawString("确诊者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.DIAGNOSIS),
+        g.drawString("Number of confirmed:" + PersonPool.getInstance().getPeopleSize(Person.State.DIAGNOSIS),
                 captionStartOffsetX, captionStartOffsetY + 5 * captionSize);
         g.setColor(new Color(0x48FFFC));
-        g.drawString("已隔离人数：" + PersonPool.getInstance().getPeopleSize(Person.State.FREEZE),
+        g.drawString("Number of isolated at the hospital:" + PersonPool.getInstance().getPeopleSize(Person.State.FREEZE),
                 captionStartOffsetX, captionStartOffsetY + 6 * captionSize);
         g.setColor(new Color(0x00ff00));
         g.drawString("治愈者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.CURED),

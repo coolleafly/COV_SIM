@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-public class PersonPool                   //区域人群对象池，该地区假设为一个近似封闭的环境，拥有几乎不变的民众数量
+public class PersonPool                   
 {
     private static PersonPool personPool = new PersonPool();
 
@@ -17,11 +17,11 @@ public class PersonPool                   //区域人群对象池，该地区假
         return personList;
     }
 
-    public int getPeopleSize(int state)                 //获取指定人群数量
+    public int getPeopleSize(int state)                 //Gets the number of the specified population
     {
         if (state == -1)
         {
-            return personList.size();                //state 市民类型 Person.State的值，若为-1则返回当前总数目
+            return personList.size();                
         }
         int p = 0;
         for (Person person : personList)
@@ -34,11 +34,11 @@ public class PersonPool                   //区域人群对象池，该地区假
         return p;
     }
 
-    public int getPeopleGSize(int G)                 //获取指定人群数量
+    public int getPeopleGSize(int G)             
     {
         if (G == -1)
         {
-            return personList.size();                //state 市民类型 Person.State的值，若为-1则返回当前总数目
+            return personList.size();            
         }
         int p = 0;
         for (Person person : personList)
@@ -53,10 +53,10 @@ public class PersonPool                   //区域人群对象池，该地区假
 
     private PersonPool()
     {
-        City city = new City((Constants.CITY_WIDTH/2), (Constants.CITY_HEIGHT/2));        //设置城市中心为坐标(400,400)
-        for (int i = 0; i < Constants.CITY_PERSON_SIZE; i++)                   //添加城市居民
+        City city = new City((Constants.CITY_WIDTH/2), (Constants.CITY_HEIGHT/2));       
+        for (int i = 0; i < Constants.CITY_PERSON_SIZE; i++)                   
         {
-            Random random = new Random();                        //产生N(a,b)的数：Math.sqrt(b)*random.nextGaussian()+a
+            Random random = new Random();                        //N(a,b): Math.sqrt(b)*random.nextGaussian()+a
             int x = (int) ((Constants.CITY_WIDTH/8) * random.nextGaussian() + city.getCenterX());
             int y = (int) ((Constants.CITY_HEIGHT/10) * random.nextGaussian() + city.getCenterY());
             if (x > Constants.CITY_WIDTH)

@@ -20,9 +20,9 @@ public class MyPanel extends JPanel implements Runnable {
         g.setColor(new Color(0xFF797D));                   //The Color of the Hospital
         g.drawRect(Hospital.getInstance().getX(), Hospital.getInstance().getY(),
                 Hospital.getInstance().getWidth(), Hospital.getInstance().getHeight());    
-        g.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        g.setFont(new Font("Times New Roman", Font.BOLD, 16));
         g.setColor(new Color(0x00ff00));
-        g.drawString("医院", Hospital.getInstance().getX() + Hospital.getInstance().getWidth() / 4,
+        g.drawString("Hospital", Hospital.getInstance().getX() + Hospital.getInstance().getWidth() / 4,
                 Hospital.getInstance().getY() - 16);
         List<Person> people = PersonPool.getInstance().getPersonList();    //The circle of the people
         if (people == null)
@@ -70,7 +70,7 @@ public class MyPanel extends JPanel implements Runnable {
                 }
                 case Person.State.CURED:
                 {
-                    //治愈患者
+                    
                     g.setColor(new Color(0x00ff00));      //CURED
                 }
             }
@@ -82,7 +82,7 @@ public class MyPanel extends JPanel implements Runnable {
         int captionStartOffsetY = 40;
         int captionSize = 24;
 
-        //显示数据信息
+        //Display data information
         g.setColor(Color.WHITE);
         g.drawString("Total persons：" + Constants.CITY_PERSON_SIZE, captionStartOffsetX, captionStartOffsetY);
         g.setColor(new Color(0x338221));
@@ -104,30 +104,30 @@ public class MyPanel extends JPanel implements Runnable {
         g.drawString("Number of isolated at the hospital:" + PersonPool.getInstance().getPeopleSize(Person.State.FREEZE),
                 captionStartOffsetX, captionStartOffsetY + 6 * captionSize);
         g.setColor(new Color(0x00ff00));
-        g.drawString("治愈者人数：" + PersonPool.getInstance().getPeopleSize(Person.State.CURED),
+        g.drawString("Number of cures:" + PersonPool.getInstance().getPeopleSize(Person.State.CURED),
                 captionStartOffsetX, captionStartOffsetY + 7 * captionSize);
         g.setColor(new Color(0x338221));
-        g.drawString("空余病床数：" + Math.max(Constants.BED_COUNT - PersonPool.getInstance().getPeopleSize(Person.State.FREEZE), 0),
+        g.drawString("Number of hospital beds available：" + Math.max(Constants.BED_COUNT - PersonPool.getInstance().getPeopleSize(Person.State.FREEZE), 0),
                 captionStartOffsetX, captionStartOffsetY + 8 * captionSize);
         g.setColor(new Color(0xE39476));
-        //    急需病床数量应为 NEED = 现在发病者数量 - (床位总数-隔离人数)
+
 
         int needBeds = PersonPool.getInstance().getPeopleSize(Person.State.DIAGNOSIS)
             -(Constants.BED_COUNT- PersonPool.getInstance().getPeopleSize(Person.State.FREEZE));
 
-        g.drawString("急需病床：" + (Math.max(needBeds, 0)),
+        g.drawString("need beds:" + (Math.max(needBeds, 0)),
                 captionStartOffsetX, captionStartOffsetY + 9 * captionSize);
         g.setColor(new Color(0x000000));
-        g.drawString("病死人数：" + PersonPool.getInstance().getPeopleSize(Person.State.DEATH),
+        g.drawString("Number of deaths:" + PersonPool.getInstance().getPeopleSize(Person.State.DEATH),
                 captionStartOffsetX, captionStartOffsetY + 10 * captionSize);
         g.setColor(new Color(0xffffff));
-        g.drawString("世界时间（天）：" + (int) (worldTime / Constants.everyday_count), captionStartOffsetX,
+        g.drawString("World time (days) :" + (int) (worldTime / Constants.everyday_count), captionStartOffsetX,
                 captionStartOffsetY + 11 * captionSize);
         OutCsv.writeCsv(false);
         worldTime++;
     }
 
-    public static int worldTime = 0;//世界时间
+    public static int worldTime = 0;
 
     public Timer timer = new Timer();
 
@@ -136,9 +136,7 @@ public class MyPanel extends JPanel implements Runnable {
         public boolean isStop()
         {
             boolean result=false;
-            //动画重绘终止条件， 以被隔离达到或超过100人时停止为例。
-            //if (PersonPool.getInstance().getPeopleSize(Person.State.FREEZE)>=100) {result = true;};
-            //运行到世界时间30天。
+
             if ((int) (worldTime / Constants.everyday_count)>=Constants.STOP_DAY)
             {
                 result = true;
@@ -148,7 +146,7 @@ public class MyPanel extends JPanel implements Runnable {
 
         @Override
         public void run() {
-            //动画重绘终止条件， 以被隔离超过100人时停止为例。
+            
             if (!this.isStop())
             {
                 MyPanel.this.repaint();
@@ -159,6 +157,6 @@ public class MyPanel extends JPanel implements Runnable {
     @Override
     public void run() {
         timer.schedule(new MyTimerTask(), 0, 100);
-        //启动世界计时器，时间开始流动（突然脑补DIO台词：時は停た）
+        
     }
 }

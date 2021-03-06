@@ -26,12 +26,12 @@ public class Constants
     public static double d_SUPER_TIME = 7;           //The average incubation period for super transfected carriers
     public static double d_SUPER_VARIANCE = 3;         //The standard deviation of the incubation period for super transfected carriers
 
-    //死亡概率参数
+    //Parameter of probability of death
     public static float d_DIED_TIME = 10;                   //Mean time of death
     public static double d_MILD_DIED_VARIANCE = 1;         //Standard deviation of time to death in mild cases
     public static double d_SEVERE_DIED_VARIANCE = 2;      //Standby parameter, Standard deviation of time to death in severe cases
 
-    //默认固定参数
+    //The other parameters
     public static final int CITY_WIDTH = 1000;     //The size of the city is the window boundary
     public static final int CITY_HEIGHT = 800;
 

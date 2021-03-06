@@ -2,11 +2,11 @@ import java.util.Random;
 
 public class MathUtil
 {
-    private static final Random randomGen = new Random();    //使用一个随机数生成器
+    private static final Random randomGen = new Random();    //Random number generator
 
-    public static double stdGaussian(double sigma, double u)   //正态标准差sigma值,正态均值参数mu
+    public static double stdGaussian(double sigma, double u)   //The normal standard deviation sigma value, the normal mean parameter u
     {
-        double X = randomGen.nextGaussian();     //流动意愿标准化后判断是在0的左边还是右边从而决定是否流动。
-        return sigma * X + u;                   //StdX = (X-u)/sigma，即X = sigma * StdX + u
+        double X = randomGen.nextGaussian();     //Decide whether to flow or not.
+        return sigma * X + u;                   //StdX = (X-u)/sigma,  X = sigma * StdX + u
     }
 }

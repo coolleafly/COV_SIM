@@ -25,27 +25,27 @@ public class Hospital extends Point
         return hospital;
     }
 
-    private Point point = new Point(HOSPITAL_X, HOSPITAL_Y);//第一个床位所在坐标，用于给其他床位定绝对坐标
+    private Point point = new Point(HOSPITAL_X, HOSPITAL_Y);//The first window position is drawn and used as the base position for other beds. If the screen overlaps or the bed cannot be displayed, it is related to this procedure.
     private List<Bed> beds = new ArrayList<>();
 
-    public List<Bed> getBeds()                           //获取所有床位
+    public List<Bed> getBeds()                           
     {
         return beds;
     }
 
     private Hospital()
     {
-        super(HOSPITAL_X, HOSPITAL_Y + 10);           //根据床位数量调整医院矩形的大小
-        if (Constants.BED_COUNT == 0)                        //医院矩形所在坐标
+        super(HOSPITAL_X, HOSPITAL_Y + 10);           //Draw a rectangle to represent the hospital and dynamically change its size.
+        if (Constants.BED_COUNT == 0)                        //Calculate the coordinate
         {
-            width = 0;                            //根据医院床位数量计算医院宽度
-            height = 0;                           //因为高度定了只能装载100个床位
+            width = 0;                            //Calculate the width of the rectangle
+            height = 0;                           
         }
 
         int column = Constants.BED_COUNT / 100;
         if (Constants.BED_COUNT % 100>0){column++;}
 
-        width = column * 6;                                     //根据第一个床位坐标初始化其他床位的坐标
+        width = column * 6;                                     //Initializes coordinates for other beds
         for (int i = 0; i < column; i++)
         {
 
@@ -53,7 +53,7 @@ public class Hospital extends Point
             {
                 Bed bed = new Bed(point.getX() + i * 6, point.getY() + j);
                 beds.add(bed);
-                if (beds.size() >= Constants.BED_COUNT)   //确定医院床位承载数量
+                if (beds.size() >= Constants.BED_COUNT)
                 {
                     break;
                 }
@@ -61,7 +61,7 @@ public class Hospital extends Point
         }
     }
 
-    public Bed pickBed()                    //使用床位
+    public Bed pickBed()                    //Take up the bed
     {
         for (Bed bed : beds)
         {
@@ -73,7 +73,7 @@ public class Hospital extends Point
         return null;
     }
 
-    public Bed returnBed(Bed bed)                //死亡或痊愈出院空出床位
+    public Bed returnBed(Bed bed)                //Release the occupancy of beds upon death or recovery from discharge
     {
         if (bed != null)
         {

@@ -5,7 +5,7 @@ public class Bed extends Point
     }
 
 
-    private boolean isEmpty = true;             //是否占用了该床位
+    private boolean isEmpty = true;             //Is the bed occupied
 
     public boolean isEmpty() {
         return isEmpty;

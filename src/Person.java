@@ -7,51 +7,51 @@ public class Person extends Point
     private City city;
     private MoveTarget moveTarget;
 
-    double targetXU;                 //x方向的均值mu           //正态分布N(mu,sigma)随机位移目标位置
-    double targetYU;                 //y方向的均值mu
-    double targetSig = 50;//方差sigma
+    double targetXU;               
+    double targetYU;               
+    double targetSig = 50;
 
     public interface State
     {
-        int NORMAL = 0;               //正常人，未感染的健康人
-        int SUSPECTED = NORMAL + 1;   //有暴露感染风险
-        int CURED = SUSPECTED + 1;    //治愈者——————2020.02.13注释
-        int SHADOW = CURED + 1;       //潜伏期
-        int SUPER = SHADOW + 1;       //超级传播者——————2020.02.17注释
-        int CONFIRMED = SUPER + 1;   //疑似感染病人
-        int DIAGNOSIS = CONFIRMED + 1;  //确诊病人——————2020.02.24注释
-        int FREEZE = DIAGNOSIS + 1;   //住院病人
-        int DEATH = FREEZE + 1;       //病死者
+        int NORMAL = 0;               
+        int SUSPECTED = NORMAL + 1;   
+        int CURED = SUSPECTED + 1;    
+        int SHADOW = CURED + 1;     
+        int SUPER = SHADOW + 1;     
+        int CONFIRMED = SUPER + 1;   
+        int DIAGNOSIS = CONFIRMED + 1; 
+        int FREEZE = DIAGNOSIS + 1;  
+        int DEATH = FREEZE + 1;      
     }
 
-    private void action()                 //不同状态下的单个人实例运动行为
+    private void action()             
     {
         if (state == State.FREEZE || state == State.DEATH)
         {
-            return;                       //如果处于隔离或者死亡状态，则无法行动
+            return;                       //If you are in isolation or dead, you cannot move
         }
         if (!wantMove())
         {
             return;
         }
 
-        if (moveTarget == null || moveTarget.isArrived())   //存在流动意愿的，将进行流动，流动位移仍然遵循标准正态分布
+        if (moveTarget == null || moveTarget.isArrived())   //If there is flow intention, the flow will be carried out, and the flow displacement still follows the standard normal distribution
         {
-            //在想要移动并且没有目标时，将自身移动目标设置为随机生成的符合正态分布的目标点
-            //产生N(a,b)的数：Math.sqrt(b)*random.nextGaussian()+a
+            //When it wants to move and there is no target, it sets its own moving target to the randomly generated target point conforming to the normal distribution
+            //The number that produces N(a,b)
             double targetX = MathUtil.stdGaussian(targetSig, targetXU);
             double targetY = MathUtil.stdGaussian(targetSig, targetYU);
             moveTarget = new MoveTarget((int) targetX, (int) targetY);
         }
-        int dX = moveTarget.getX() - getX();                 //计算运动位移
+        int dX = moveTarget.getX() - getX();                 //Calculate motion displacement
         int dY = moveTarget.getY() - getY();
-        double length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));   //与目标点的距离
+        double length = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));   //Distance from the target point
         if (length < 1)
         {
-            moveTarget.setArrived(true);   //判断是否到达目标点
+            moveTarget.setArrived(true);   
             return;
         }
-        int udX = (int) (dX / length);      //x轴dX为位移量，符号为沿x轴前进方向, 即udX为X方向表示量
+        int udX = (int) (dX / length);      //The x axis dX is the displacement quantity, and the sign is the forward direction along the x axis, i.e., udX is the quantity in the x direction
         if (udX == 0 && dX != 0)
         {
             if (dX > 0)
@@ -63,7 +63,7 @@ public class Person extends Point
                 udX = -1;
             }
         }
-        int udY = (int) (dY / length);     //y轴dY为位移量，符号为沿x轴前进方向，即udY为Y方向表示量
+        int udY = (int) (dY / length);     //Y axis dY is the displacement quantity, and the sign is the direction of advance along the x axis, i.e., udY is the quantity in the y direction
         if (udY == 0 && dY != 0)
         {
             if (dY > 0)
@@ -75,7 +75,7 @@ public class Person extends Point
                 udY = -1;
             }
         }
-        if (getX() > Constants.CITY_WIDTH || getX() < 0)       //横向运动边界
+        if (getX() > Constants.CITY_WIDTH || getX() < 0)      
         {
             moveTarget = null;
             if (udX > 0)
@@ -83,7 +83,7 @@ public class Person extends Point
                 udX = -udX;
             }
         }
-        if (getY() > Constants.CITY_HEIGHT || getY() < 0)     //纵向运动边界
+        if (getY() > Constants.CITY_HEIGHT || getY() < 0)    
         {
             moveTarget = null;
             if (udY > 0)
@@ -97,7 +97,7 @@ public class Person extends Point
     public Person(City city, int x, int y)
     {
         super(x, y);
-        this.city = city;                                     //对市民的初始位置进行N(x,100)的正态分布随机
+        this.city = city;                               
         targetXU = MathUtil.stdGaussian(100, x);
         targetYU = MathUtil.stdGaussian(100, y);
     }
@@ -108,9 +108,9 @@ public class Person extends Point
     public double distance(Person person)
     {
         return Math.sqrt(Math.pow(getX() - person.getX(), 2) + Math.pow(getY() - person.getY(), 2));
-    }                                                         //计算两点之间的直线距离
+    }                                                
 
-    private float SAFE_DIST = 2f;          //安全距离
+    private float SAFE_DIST = 2f;         
     private int state = State.NORMAL;
 
     public int getState()
@@ -118,19 +118,19 @@ public class Person extends Point
         return state;
     }
 
-    int infectedTime = 0;          //感染时刻
-    float confirmedTime = 0;         //疑似时刻
-    int diagnosisTime = 0;        //确诊时刻——————2020.02.24注释
-    int diedMoment = 0;            //死亡时刻，为0代表未确定，-1代表不会病死
-    int curedMoment = 0;           //治愈时刻——————2020.02.13注释
+    int infectedTime = 0;     
+    float confirmedTime = 0;       
+    int diagnosisTime = 0;       
+    int diedMoment = 0;          
+    int curedMoment = 0;        
 
-    int is_confirmed_mark=0;        //出现疑似症状后原始标记值——————2020.02.18注释
-    int is_diagnosis_mark = 0;         //确诊原始标记值——————2020.02.24注释
-    int is_freeze_mark = 0;             //隔离原始标记值
+    int is_confirmed_mark=0;      
+    int is_diagnosis_mark = 0;       
+    int is_freeze_mark = 0;          
 
-//    int infectedTime_long = 0;       //超级传播者的成为长期感染状态的时刻——————2020.02.17注释
-    int generation=0;              //第几代病例----梁烨 2020.2.22
-    int son=0;                     //他产生了多少个病毒宝宝，上帝之眼看R0。。--梁烨 2020.2.22
+ 
+    int generation=0;            
+    int son=0;             
 
     public boolean isInfected()
     {
@@ -139,9 +139,9 @@ public class Person extends Point
     public void beInfected()
     {
         int LONG_OR_SHORT = new Random().nextInt(10000) + 1;
-        if (1 <= LONG_OR_SHORT && LONG_OR_SHORT <= (int) (Constants.SUPER_RATE * 10000))   //[1,10000]随机数若在**区间内
+        if (1 <= LONG_OR_SHORT && LONG_OR_SHORT <= (int) (Constants.SUPER_RATE * 10000))   
         {
-            state = State.SUPER;                                  //有较小概率成为超级传播者——————2020.02.17注释
+            state = State.SUPER;                              
             infectedTime  = MyPanel.worldTime;
             double stdSuper_time = (MathUtil.stdGaussian(Constants.SUPER_VARIANCE,Constants.SUPER_TIME));
             double stdsuper_time =  Math.max(stdSuper_time,0);
@@ -158,44 +158,44 @@ public class Person extends Point
     }
 
 
-    public void update()                     //对各种状态的人进行不同的处理，更新发布市民健康状态
+    public void update()                     //Different treatment is carried out for people of various states, and updates and releases the health status of citizens
     {
         if (state == State.DEATH)
         {
-            return;                   //如果已经死亡，就不需要处理了
+            return;                   
         }
 
-        if (state == State.FREEZE && diedMoment== 0)              //处理已经住院的患者，目前生死未定
+        if (state == State.FREEZE && diedMoment== 0)             
         {
             int destiny = new Random().nextInt(10000) + 1;
-            if (1 <= destiny && destiny <= (int) (Constants.FATALITY_RATE * 10000))   //[1,10000]随机数若在重症区间内
+            if (1 <= destiny && destiny <= (int) (Constants.FATALITY_RATE * 10000))   
             {
                 int dieTime = (int) MathUtil.stdGaussian(Constants.SEVERE_DIED_VARIANCE, Constants.DIED_TIME);
-                diedMoment = diagnosisTime + dieTime;        //重度发病后确定死亡时刻，小概率逃过死亡——————2020.02.15注释
+                diedMoment = diagnosisTime + dieTime;        //The moment of death is determined after severe onset, and the probability of death is small
             }
             else
                 {
                     int lucky = new Random().nextInt(10000) + 1;
-                    if (1 <= lucky && lucky <= (int) (Constants.FATALITY_RATE * 10000)) //[1,10000]随机数若在轻症区间内
+                    if (1 <= lucky && lucky <= (int) (Constants.FATALITY_RATE * 10000)) //[1,10000] If the random number is within the range of mild symptoms
                     {
                         int dieTime = (int) MathUtil.stdGaussian(Constants.MILD_DIED_VARIANCE, Constants.DIED_TIME);
                         diedMoment = diagnosisTime + dieTime;
-                    }                                 //轻度发病后确定死亡时刻，可大概率逃过死亡——————2020.02.15注释
+                    }                                 //The moment of death can be determined after mild onset, and death can be avoided with high probability
                     else
                     {
-                        diedMoment = -1;            //在现已确诊的情况下，日后仍可逃过死亡——————2020.02.15注释
+                        diedMoment = -1;            //In cases that have now been diagnosed, death can still be avoided later
                     }
                 }
         }
 
         if (state == State.CONFIRMED && MyPanel.worldTime - confirmedTime >= Constants.HOSPITAL_RECEIVE_TIME)
-        {                                                          //如果现在是疑似状态，且（世界时刻-疑似时刻）
+        {                                                          //If it is now suspected, and (world moment - suspected moment)
             int DOOM = new Random().nextInt(10000) + 1;
             if ( 1 <= DOOM && DOOM <= (int) (Constants.DIAGNOSIS_RATE * 10000))
             {
                 state = State.DIAGNOSIS;
-                diagnosisTime = MyPanel.worldTime;                    //把确诊时刻记录下来
-                is_diagnosis_mark = 1;                                //确诊后即被标记
+                diagnosisTime = MyPanel.worldTime;                    //Record the moment of diagnosis
+                is_diagnosis_mark = 1;                                //They are marked as soon as they are diagnosed
             }
 //            else
 //            {
@@ -203,11 +203,11 @@ public class Person extends Point
 //            }
         }
 
-        if(state == State.DIAGNOSIS)    //已确诊过的病人进行收治——————2020.02.24注释
+        if(state == State.DIAGNOSIS)    //Admission of patients who have already been diagnosed
         {
             Bed bed = Hospital.getInstance().pickBed();
             if (bed != null)
-            {                                                     //查找空床位,若有空床就安置病人
+            {                                                     //Search for vacant beds and place patients if available
                 useBed = bed;
                 state = State.FREEZE;
                 is_freeze_mark = 1 ;
@@ -217,18 +217,18 @@ public class Person extends Point
             }
         }
 
-        if (state == State.DIAGNOSIS && diedMoment== 0)              //处理已经住院的患者，目前生死未定
+        if (state == State.DIAGNOSIS && diedMoment== 0)              //Treatment of patients who have been hospitalized, life and death are not yet known
         {
             int dieTime = (int) MathUtil.stdGaussian(Constants.SEVERE_DIED_VARIANCE, Constants.DIED_TIME);
             diedMoment = diagnosisTime + dieTime;
         }
 
-        if (state == State.FREEZE && curedMoment == 0)             //目前住院但能否康复未知
+        if (state == State.FREEZE && curedMoment == 0)             //Now in the hospital
         {
             int curedTime = (int) MathUtil.stdGaussian(Constants.CURED_VARIANCE, Constants.CURED_TIME);
             if (curedTime > diedMoment - MyPanel.worldTime && diedMoment > 0)
             {
-                curedMoment = -1;                   //来不及治好，死亡时间在治愈时间之前——————2020.02.13注释
+                curedMoment = -1;                 
             }
             else
             {
@@ -236,9 +236,9 @@ public class Person extends Point
             }
         }
 
-        if (state == State.FREEZE && curedMoment > 0 && MyPanel.worldTime >= curedMoment)   //目前住院但达到康复时间
+        if (state == State.FREEZE && curedMoment > 0 && MyPanel.worldTime >= curedMoment)   
         {
-            int random1 = new Random().nextInt(10000) + 1;        //随机摇个骰子1-100——————2020.02.15注释
+            int random1 = new Random().nextInt(10000) + 1;        
             if (random1 < Constants.OUT_HOSPITAL_SHADOW*10000)
             {
                 infectedTime = MyPanel.worldTime;
@@ -246,8 +246,8 @@ public class Person extends Point
                 diagnosisTime = 0;
 //                infectedTime = 0;
                 diedMoment = 0;
-                curedMoment = 0;                      //重新定义状态变化之后的需要判定的时刻——————2020.02.15注释
-                state = State.SHADOW;                 //状态变为潜伏，之后放回城市内随机位置——————2020.02.15注释
+                curedMoment = 0;                    
+                state = State.SHADOW;                 //The state goes dormant and then returns to a random location within the city
                 double stdShadow_time = (MathUtil.stdGaussian(Constants.SHADOW_VARIANCE,Constants.SHADOW_TIME));
                 double stdRnshadow_time = Math.abs(stdShadow_time);
                 confirmedTime = (float) (MyPanel.worldTime + stdRnshadow_time);
@@ -260,31 +260,31 @@ public class Person extends Point
                 infectedTime = 0;
                 diedMoment = 0;
                 curedMoment = 0;
-                state = State.CURED;                      //状态变为治愈，之后放回城市内随机位置——————2020.02.15注释
+                state = State.CURED;                      //The state is changed to Heal and then returned to a random location in the city
             }
             super.setX((int) MathUtil.stdGaussian(100, city.getCenterX()));
             super.setY((int) MathUtil.stdGaussian(100, city.getCenterY()));
-            Hospital.getInstance().returnBed(useBed);                  //归还床位——————2020.02.15注释
+            Hospital.getInstance().returnBed(useBed);                  //Return the beds
         }
         if ((state == State.DIAGNOSIS || state == State.FREEZE) && MyPanel.worldTime >= diedMoment && diedMoment > 0)
         {
-            state = State.DEATH;                                 //患者死亡,尸体丢弃在城市正态分布随机所得位置
+            state = State.DEATH;                                 
             super.setX((int) MathUtil.stdGaussian(100, city.getCenterX()));
             super.setY((int) MathUtil.stdGaussian(100, city.getCenterY()));
-            Hospital.getInstance().returnBed(useBed);                    //归还床位
+            Hospital.getInstance().returnBed(useBed);                    //Return the beds
         }
         if (MyPanel.worldTime  > confirmedTime && state == State.SHADOW)
-        {                                                //一个正态分布，用于潜伏期内随机出现疑似症状时间
+        {                                                //A normal distribution is used for the time during the incubation period when suspected symptoms appear randomly
             state = State.CONFIRMED;
-            is_confirmed_mark = 1;                              //出现疑似症状后就被标记——————2020.02.18注释
+            is_confirmed_mark = 1;                              
         }
         if(MyPanel.worldTime  > confirmedTime && state == State.SUPER)
         {
-            state = State.CONFIRMED;               //一个正态分布，用于超级潜伏者随机出现疑似症状时间——————2020.02.17注释
-            is_confirmed_mark = 1;               //出现疑似症状后就被标记——————2020.02.18注释
+            state = State.CONFIRMED;             
+            is_confirmed_mark = 1;               
         }
 
-        action();                                                       //处理未隔离者的移动问题
+        action();                                                       //Handling the movement of unquarantined persons
 
         List<Person> people = PersonPool.getInstance().personList;
         if (state >= State.SHADOW)
@@ -296,21 +296,21 @@ public class Person extends Point
 
             if (person.getState() == State.NORMAL||person.getState() == State.DEATH||person.getState() == State.CURED)
             {
-                continue;                            //遍历人群，通过随机值和判定是否为安全距离决定感染其他人
+                continue;                            //It traverses the population and infects others by random values and determining whether it is a safe distance
             }
             int random = new Random().nextInt(10000) + 1;
             if(state== State.NORMAL && random < Constants.BROAD_RATE*10000 && distance(person) < SAFE_DIST)
             {
-                this.beInfected();                      //一个正常人在非安全距离里感染——————2020.02.14注释
-                person.son++;                           //传染他的人多了一个病毒宝宝 ----2020.2.22 梁烨FATALITY_RATE
-                this.generation=person.generation + 1;   //此人的感染代数是父辈的下一代 ----2020.2.22 梁烨
+                this.beInfected();                     
+                person.son++;                           
+                this.generation=person.generation + 1;   
                 break;
             }
             if (state == State.CURED && random < Constants.CURED_BROAD_RATE*10000 && distance(person) < SAFE_DIST)
             {
-                this.beInfected();                    //一个人治愈后，在非安全距离再次被传播感染的概率——————2020.02.14注释
-                person.son++;                        //传染他的人多了一个病毒宝宝 ----2020.2.22 梁烨
-                this.generation=person.generation + 1;   //此人的感染代数是父辈的下一代 ----2020.2.22 梁烨 治愈后再次感染视为新一代病例
+                this.beInfected();                    //The probability of a person being reinfected from an unsafe distance after being cured ,Liang
+                person.son++;                        
+                this.generation=person.generation + 1;   //The infective algebra of this person is the next generation of the parent
                 break;
             }
         }

@@ -1,3 +1,3 @@
-public class Virus       //病毒对象
+public class Virus       //Is not enabled
 {
 }
